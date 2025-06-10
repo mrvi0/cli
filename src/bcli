@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+# Цвета
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# Папка с модулями
+MODULES_DIR="$HOME/.bcli/modules"
+REPO_URL="https://raw.githubusercontent.com/B4DCAT/bcli/main"
+
+# Шапка UI (7 строк x 21 символ)
+header() {
+    echo -e "${CYAN}"
+    echo "====================="
+    echo "|       BCLI        |"
+    echo "|    by B4DCAT      |"
+    echo "|-------------------|"
+    echo "|  CLI for DevOps   |"
+    echo "|  Fast & Simple    |"
+    echo "====================="
+    echo -e "${NC}"
+}
+
+# Помощь
+help() {
+    header
+    echo -e "${CYAN}BCLI - ваш CLI помощник${NC}"
+    echo "Использование: bcli <команда> [аргументы]"
+    echo "Доступные команды:"
+    for f in "$MODULES_DIR"/*.sh; do
+        [ -f "$f" ] || continue
+        cmd=$(basename "$f" .sh)
+        echo "  $cmd"
+    done
+    echo "  update - обновить CLI и модули"
+}
+
+# Обновление
+update() {
+    echo -e "${CYAN}Обновляю BCLI...${NC}"
+    curl -sSL "$REPO_URL/src/setup.sh" | bash
+    echo -e "${GREEN}Обновлено!${NC}"
+}
+
+# Роутер команд
+if [[ -z "$1" || "$1" == "help" ]]; then
+    help
+    exit 0
+fi
+
+CMD="$1"
+shift
+
+MODULE="$MODULES_DIR/$CMD.sh"
+
+if [[ "$CMD" == "update" ]]; then
+    update
+elif [[ -f "$MODULE" ]]; then
+    source "$MODULE"
+    if declare -f main > /dev/null; then
+        main "$@"
+    else
+        echo -e "${RED}Модуль $CMD не содержит функцию main${NC}"
+        exit 1
+    fi
+else
+    echo -e "${RED}Неизвестная команда: $CMD${NC}"
+    help
+    exit 1
+fi
