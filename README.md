@@ -1,3 +1,10 @@
+# Запуск
+
+``` bash
+curl -sSL https://raw.githubusercontent.com/mrvi0/cli/main/src/setup.sh | bash
+source ~/.bashrc
+```
+
 # [Название Вашего Проекта]
 
 <!-- Бейджи: Замените your_username/your_project_name -->

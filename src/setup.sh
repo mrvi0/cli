@@ -26,7 +26,6 @@ chmod +x "$INSTALL_DIR/bcli"
 
 # Загрузка модулей
 echo -e "${CYAN}Загружаю модули...${NC}"
-# Динамическая загрузка списка модулей через GitHub API
 MODULES=$(curl -sSL "https://api.github.com/repos/$REPO/contents/src/modules?ref=$BRANCH" | grep '"name"' | cut -d'"' -f4 | cut -d'.' -f1)
 for mod in $MODULES; do
     curl -sSL "$BASE_URL/modules/$mod.sh" -o "$MODULES_DIR/$mod.sh" 2>/dev/null
@@ -41,4 +40,4 @@ fi
 
 echo -e "${GREEN}Установка завершена!${NC}"
 echo -e "Выполните ${CYAN}source ~/.bashrc${NC} или перелогиньтесь"
-echo -e "Проверьте: ${CYAN}bcli help${NC}"
+echo -e "Проверьте: ${CYAN}bcli${NC}"
